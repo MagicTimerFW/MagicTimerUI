@@ -24,7 +24,7 @@ open class MagicTimerLabel: UILabel {
     /// Elappsed time of timer.
     private(set) var elapsedTime: TimeInterval?
 
-    public weak var delegate: MagicTimerViewDelegate?
+    public weak var delegate: MagicTimerLabelDelegate?
     
     /// The current state of the timer.
     public var currentState: MagicTimerState {
@@ -248,7 +248,7 @@ open class MagicTimerLabel: UILabel {
     
 }
 
-extension MagicTimerView {
+extension MagicTimerLabel {
     
     /// Set constraint of any element in object.  Called in init after initialSubView method.
     func setConstraint() {
