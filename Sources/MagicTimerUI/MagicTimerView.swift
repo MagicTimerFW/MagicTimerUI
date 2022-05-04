@@ -11,7 +11,7 @@ import MagicTimerCore
  device without further interactions from your extension.
  */
 
-@available(*, deprecated, renamed: "MagicTimerLabel")
+@available(*, unavailable, renamed: "MagicTimerLabel")
 public typealias MagicTimerView = MagicTimerLabel
 
 @IBDesignable
