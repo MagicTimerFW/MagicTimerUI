@@ -1,5 +1,7 @@
 import Foundation
 import UIKit
+import MagicTimer
+import MagicTimerCore
 
 /**
  An  object that displays a countdown or count-up timer.
