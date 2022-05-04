@@ -11,8 +11,11 @@ import MagicTimerCore
  device without further interactions from your extension.
  */
 
+@available(*, deprecated, renamed: "MagicTimerLabel")
+public typealias MagicTimerView = MagicTimerLabel
+
 @IBDesignable
-open class MagicTimerView: UIView {
+open class MagicTimerLabel: UILabel {
     
     /// Timer broker that bridge between timer logic and view.
     private var broker: MagicTimer = .init()
@@ -29,22 +32,7 @@ open class MagicTimerView: UIView {
     }
     /// Timer state callback
     public var didStateChange: ((MagicTimerState) -> Void)?
-
-    /// The color of the timer label.
-    @IBInspectable public var textColor: UIColor! {
-        willSet {
-            timerLabel.textColor = newValue
-        }
-    }
     
-    /// Font size of timer label. just available in interface builder. Default value is 18.
-    @available(*, unavailable, message: "Just available in interface builder")
-    @IBInspectable var fontSize: CGFloat = 18 {
-        willSet {
-            timerLabel.font = timerLabel.font.withSize(newValue)
-        }
-    }
-        
     /// The radius to use when drawing rounded corners for the timer view background. Default is 0.0.
     @IBInspectable public var cornerRadius: CGFloat = 0.0 {
         willSet {
@@ -109,7 +97,7 @@ open class MagicTimerView: UIView {
         willSet {
             broker.defultValue = newValue.convertToTimeInterval()
             let validTimeInterval = newValue.convertToTimeInterval()
-            timerLabel.text = formatter.converToValidFormat(ti: validTimeInterval)
+            self.text = formatter.converToValidFormat(ti: validTimeInterval)
         }
     }
     
@@ -119,27 +107,13 @@ open class MagicTimerView: UIView {
             broker.isActiveInBackground = newValue
         }
     }
-    /// The font used to display the timer label text.
-    public var font: UIFont? {
-        willSet {
-            timerLabel.font = newValue?.monospacedDigitFont
-        }
-    }
+
     /// The mode of the timer. default is stop watch.
     public var mode: MGTimerMode = .stopWatch {
         willSet {
             broker.countMode = newValue
         }
     }
-    
-    private lazy var timerLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .systemBlue
-        label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 18).monospacedDigitFont
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
     
     private lazy var backgrounImageView: UIImageView = {
         let imageView = UIImageView()
@@ -169,7 +143,7 @@ open class MagicTimerView: UIView {
     }
     /// Set inital value to interface object. Called when interface is initialized.
     private func setInitialValue() {
-        timerLabel.text = formatter.converToValidFormat(ti: 0)
+        self.text = formatter.converToValidFormat(ti: 0)
         
     }
     /// Called when interface is initialized. Override this method for conforming delegate.
@@ -177,7 +151,7 @@ open class MagicTimerView: UIView {
         broker.elapsedTimeDidChangeHandler = { timeInterval in
             self.elapsedTime = timeInterval
             DispatchQueue.main.async {
-                self.timerLabel.text = self.formatter.converToValidFormat(ti: timeInterval)
+                self.text = self.formatter.converToValidFormat(ti: timeInterval)
                 self.delegate?.timerElapsedTimeDidChange(timer: self, elapsedTime: timeInterval)
             }
         }
@@ -261,13 +235,13 @@ open class MagicTimerView: UIView {
     
     /// Reset timer to zero.
     public func reset() {
-        timerLabel.text = formatter.converToValidFormat(ti: 0)
+        text = formatter.converToValidFormat(ti: 0)
         broker.reset()
         didStateChange?(.restarted)
     }
     /// Reset timer to the default value.
     public func resetToDefault() {
-        timerLabel.text = formatter.converToValidFormat(ti: broker.defultValue)
+        text = formatter.converToValidFormat(ti: broker.defultValue)
         broker.resetToDefault()
         didStateChange?(.restarted)
     }
@@ -278,13 +252,7 @@ extension MagicTimerView {
     
     /// Set constraint of any element in object.  Called in init after initialSubView method.
     func setConstraint() {
-        
-        let timerLabelConstraint: [NSLayoutConstraint] = [
-            timerLabel.topAnchor.constraint(equalTo: topAnchor),
-            timerLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            timerLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
-            timerLabel.trailingAnchor.constraint(equalTo: trailingAnchor)
-        ]
+
         let imageViewConstrinat: [NSLayoutConstraint] = [
             backgrounImageView.topAnchor.constraint(equalTo: topAnchor),
             backgrounImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -293,13 +261,11 @@ extension MagicTimerView {
         ]
         
         NSLayoutConstraint.activate(imageViewConstrinat)
-        NSLayoutConstraint.activate(timerLabelConstraint)
     }
     
     /// Add subview of any element in object. Called in init before setConstraint method.
     func initialSubView() {
         addSubview(backgrounImageView)
-        addSubview(timerLabel)
     }
     
 }
